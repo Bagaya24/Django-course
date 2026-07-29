@@ -1,5 +1,6 @@
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
 from ecom_app.models import Products
 from .cart import Cart
 
@@ -9,7 +10,8 @@ def cart_summary(request:HttpRequest):
     cart = Cart(request)
     products = cart.get_products
     quantities = cart.get_quantities
-    return render(request, "cart_summary.html", dict(products=products, quantities=quantities))
+    totals = cart.total_cart()
+    return render(request, "cart_summary.html", dict(products=products, quantities=quantities, totals=totals))
 
 def cart_add(request:HttpRequest):
     cart = Cart(request)
@@ -26,11 +28,20 @@ def cart_add(request:HttpRequest):
         cart.add(product=product, qty=product_qty)
 
         cart_quantity = cart.__len__()
+        messages.success(request, "Product added to cart")
         return JsonResponse({"quantity": cart_quantity})
     return None
 
 def cart_delete(request:HttpRequest):
-    pass
+    cart = Cart(request)
+    if request.POST.get("action") == "post":
+        product_id = request.POST.get("product_id")
+        # delete cart
+        cart.delete_cart(product_id=product_id)
+        messages.success(request, "Item deleted from shopping cart")
+        return JsonResponse(dict(message="Success"))
+    return None
+
 
 def cart_update(request:HttpRequest):
     cart = Cart(request)
@@ -41,5 +52,6 @@ def cart_update(request:HttpRequest):
         if product_qty is not None:
             product_qty = int(product_qty)
         cart.update_cart(product_id=product_id, product_quantity=product_qty)
+        messages.success(request, "Item updated successfully")
         return JsonResponse(dict(message="Success"))
     return None

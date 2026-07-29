@@ -14,54 +14,63 @@
 <div class="container">
     {% if products %}
     {% for product in products %}
-   <div class="card mb-3" style="max-width: 540px;">
-  <div class="row g-0">
-    <div class="col-md-4">
-     <img src="{{ product.image.url }}" class="card-img-top" style="" alt="{{ product.name }}">
-    </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="card-title">{{ product.name }}</h5>
-        <p class="card-text">{{ product.description }}</p>
-          <br>
-            <div class="row">
-                <div class="col-md-4">
-                    Quantity:
-                </div>
-                <div class="col-md-3">
-                    <select class="form-select" id="selected{{product.id}}">
-
-                            {% for key, value in quantities.items %}
-                                {% if product.id|slugify == key %}
-                                 <option selected>{{ value }}</option>
-                                {% endif %}
-                            {% endfor %}
-
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                    </select>
-                </div>
-
+    <div class="card mb-3" style="max-width: 540px;">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="{{ product.image.url }}" class="card-img-top" style="" alt="{{ product.name }}">
             </div>
-          <br>
-          <button class="btn btn-danger remove-cart"
-                    data-index="{{ product.id }}"
-            >
-                Remove
-            </button>
-          <button class="btn btn-outline-dark update-cart"
-                    data-index="{{ product.id }}"
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.description }}</p>
+                    {% if product.is_sale == True %}
+                    <span class="text-muted text-decoration-line-through">{{ product.price }}$</span>
+                    {{ product.sale_price }}$
+                    {% else %}
+                    {{ product.price }}$
+                    {% endif %}
+                    <br>
+                    <div class="row">
+                        <div class="col-md-4">
+                            Quantity:
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="selected{{product.id}}">
 
-            >
-                Update
-            </button>
-      </div>
+                                {% for key, value in quantities.items %}
+                                {% if product.id|slugify == key %}
+                                <option selected>{{ value }}</option>
+                                {% endif %}
+                                {% endfor %}
+
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <br>
+                    <button class="btn btn-danger remove-cart"
+                            data-index="{{ product.id }}"
+                    >
+                        Remove
+                    </button>
+                    <button class="btn btn-outline-dark update-cart"
+                            data-index="{{ product.id }}"
+                    >
+                        Update
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
-  </div>
-</div>
     {% endfor %}
+    <h3>
+        Total: {{ totals }}$
+    </h3>
     {% else %}
     <h1>
         No products
@@ -72,7 +81,7 @@
 <br>
 
 <script>
-    <!--  check if the button is pressed-->
+    <!--  Update a card -->
       $(document).on('click', '.update-cart', function(e){
         e.preventDefault();
         const productId = $(this).data("index")
@@ -86,9 +95,36 @@
             action: "post"
             },
             success: function(json){
-              console.log(json)
+
 <!--                document.getElementById("cart-quantity").textContent = json.quantity-->
-<!--                location.reload()-->
+                location.reload()
+                console.log(json)
+            },
+
+            error: function(xhr, errmsg, err){
+
+            },
+
+        })
+      })
+<!--  remove a card  -->
+     $(document).on('click', '.remove-cart', function(e){
+        e.preventDefault();
+        const productId = $(this).data("index")
+        $.ajax({
+          type: "POST",
+          url: "{% url 'cart_delete' %}",
+          data: {
+            product_id: productId,
+
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: "post"
+            },
+            success: function(json){
+
+<!--                document.getElementById("cart-quantity").textContent = json.quantity-->
+                location.reload()
+                console.log(json)
             },
 
             error: function(xhr, errmsg, err){

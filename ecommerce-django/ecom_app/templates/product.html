@@ -60,6 +60,8 @@
             success: function(json){
     <!--          console.log(json)-->
                 document.getElementById("cart-quantity").textContent = json.quantity
+                location.reload()
+
             },
             error: function(xhr, errmsg, err){
 
