@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="card mb-3">
+        <img src="{{ product.image.url }}" class="card-img-top" style="" alt="{{ product.name }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">{{ product.description }}</p>
+            {% if product.is_sale == True %}
+            <span class="text-muted text-decoration-line-through">{{ product.price }}$</span>
+            {{ product.sale_price }}$
+            {% else %}
+            {{ product.price }}$
+            {% endif %}
+            <br>
+            <br>
+
+            <div class="row">
+                <div class="col-md-2">
+                    Quantity:
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" id="quantity-cart">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+
+            </div>
+              <br>
+            <br>
+
+            <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+            <button class="btn btn-outline-secondary"
+                    value="{{ product.id }}"
+                    id="add-cart"
+            >
+                Add to cart
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    <!--  check if the button is pressed-->
+      $(document).on('click', '#add-cart', function(e){
+        e.preventDefault();
+        $.ajax({
+          type: "POST",
+          url: "{% url 'cart_add' %}",
+          data: {
+            product_id: $('#add-cart').val(),
+            product_qty: $('#quantity-cart option:selected').text(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: "post"
+            },
+            success: function(json){
+    <!--          console.log(json)-->
+                document.getElementById("cart-quantity").textContent = json.quantity
+            },
+            error: function(xhr, errmsg, err){
+
+            },
+
+        })
+      })
+</script>
+{% endblock %}

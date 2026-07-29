@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Shopping cart</h1>
+            <p class="lead fw-normal text-white-50 mb-0">View Your Cart</p>
+        </div>
+    </div>
+
+</header>
+<br>
+<br>
+<div class="container">
+    {% if products %}
+    {% for product in products %}
+   <div class="card mb-3" style="max-width: 540px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+     <img src="{{ product.image.url }}" class="card-img-top" style="" alt="{{ product.name }}">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ product.name }}</h5>
+        <p class="card-text">{{ product.description }}</p>
+          <br>
+            <div class="row">
+                <div class="col-md-4">
+                    Quantity:
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="selected{{product.id}}">
+
+                            {% for key, value in quantities.items %}
+                                {% if product.id|slugify == key %}
+                                 <option selected>{{ value }}</option>
+                                {% endif %}
+                            {% endfor %}
+
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+
+            </div>
+          <br>
+          <button class="btn btn-danger remove-cart"
+                    data-index="{{ product.id }}"
+            >
+                Remove
+            </button>
+          <button class="btn btn-outline-dark update-cart"
+                    data-index="{{ product.id }}"
+
+            >
+                Update
+            </button>
+      </div>
+    </div>
+  </div>
+</div>
+    {% endfor %}
+    {% else %}
+    <h1>
+        No products
+    </h1>
+    {% endif %}
+</div>
+<br>
+<br>
+
+<script>
+    <!--  check if the button is pressed-->
+      $(document).on('click', '.update-cart', function(e){
+        e.preventDefault();
+        const productId = $(this).data("index")
+        $.ajax({
+          type: "POST",
+          url: "{% url 'cart_update' %}",
+          data: {
+            product_id: productId,
+            product_qty: $(`#selected${productId} option:selected`).text(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: "post"
+            },
+            success: function(json){
+              console.log(json)
+<!--                document.getElementById("cart-quantity").textContent = json.quantity-->
+<!--                location.reload()-->
+            },
+
+            error: function(xhr, errmsg, err){
+
+            },
+
+        })
+      })
+</script>
+{% endblock %}
