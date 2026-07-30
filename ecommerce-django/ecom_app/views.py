@@ -47,12 +47,12 @@ def register_user(request: HttpRequest):
             password = form.cleaned_data.get("password1")
             user = authenticate(username=username, password=password)
             login(request, user)
-            messages.success(request, "You have registered successfully !")
-            return redirect("home")
+            messages.success(request, "You account has created, please ... !")
+            return redirect("user_info")
         messages.error(request, "Some things whet wrong, please make sure all the fields are ...")
     return render(request, "register.html", {"form":form})
 
-def update_user(request: HttpRequest):
+def update_user(request):
     if request.user.is_authenticated:
         current_user = User.objects.get(id=request.user.id)
         user_form = forms.UpdateUserForm(request.POST or None, instance=current_user)
@@ -65,6 +65,39 @@ def update_user(request: HttpRequest):
         return render(request, "update_user.html", {"form":user_form})
 
     messages.success(request, "You must be logged in to access that page")
+    return redirect("home")
+
+def update_password(request):
+    if request.user.is_authenticated:
+        current_user = request.user
+
+        if request.method == "POST":
+            form = forms.UpdatePasswordForm(current_user, request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Your password has been update")
+                login(request, current_user)
+                return redirect("update_user")
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+
+
+        form = forms.UpdatePasswordForm(current_user)
+        return render(request, "update_password.html", {"form": form})
+
+    messages.success(request, "You must be logged in to access that page")
+    return redirect("home")
+
+def update_info(request):
+    if request.user.is_authenticated:
+        current_user = forms.Profile.objects.get(user__id=request.user.id)
+        form = forms.UserInfoForm(request.POST or None, instance=current_user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your info has been updated!")
+            return redirect("home")
+        return render(request, "update_user_info.html", {"form": form})
+    messages.success(request, "You must be logged in to access that page!")
     return redirect("home")
 
 # Product
