@@ -10,15 +10,22 @@
 
 </header>
 <div class="container">
+
     <form method="post" action="{% url 'update_info' %}">
         {% csrf_token %}
+         <h3 class="text-secondary my-2">Billing information</h3>
         <br>
         {{ form.as_p }}
+        <br>
+        <br>
+         <h3 class="text-secondary my-2">Shipping information</h3>
+        {{ shipping_form.as_p }}
 
         <button type="submit" class="btn btn-secondary">Update Profile</button>
 
     </form>
     <br>
     <br>
+
 </div>
 {% endblock %}
