@@ -27,6 +27,7 @@ class Cart:
             #         Save the cart transformed to the profile model
             current_user.update(old_cart=cart_transformed)
 
+
     def add(self, product, qty:int=1):
         product_id = str(product.id)
         if product_id in self.cart:
@@ -86,5 +87,4 @@ class Cart:
         if product_id in self.cart:
             del self.cart[product_id]
         self.session.modified = True
-
         self._save_card_to_db()

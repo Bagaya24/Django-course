@@ -71,14 +71,15 @@
                     Billing Info
                 </div>
                 <div class="card-body">
-                    <form action="" method="POST">
+                    <form action="{% url 'process_order' %}" method="POST">
                         {% csrf_token %}
                         {{ billing_form.as_p }}
+                        <button type="submit" class="btn btn-md btn-outline-success">Pay now</button>
                     </form>
 
                 </div>
             </div>
-            <a href="#" class="btn btn-md btn-outline-success">Pay now</a>
+
             
         </div>
     </div>
