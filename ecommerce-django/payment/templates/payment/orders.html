@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+
+            <div class="card">
+  <div class="card-header">
+    Order - {{ order.id }} - {{ order.amount_paid }}$
+  </div>
+  <div class="card-body">
+    <p class="card-text">Email : {{ order.email }}</p>
+      {% if order.date_shipped %}
+    <p class="card-text">Date Shipped : {{ order.date_shipped }}</p>
+      {% else %}
+    <p class="card-text">Date Ordered : {{ order.date_ordered }}</p>
+      {% endif %}
+    <p class="card-text">Full name : {{ order.full_name }}</p>
+    <p class="card-text">Shipping Address : {{ order.shipping_address }}</p>
+      <h5 class="card-title text-secondary">Items</h5>
+      {% for item in items %}
+      <p class="card-text text-dark">{{ item.product }} - {{ item.quantity }}</p>
+      {% endfor %}
+      {% if not order.shipped %}
+      <form action="" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="shipping_status" value="true">
+          <button type="submit" class="btn btn-small btn-success">Mark As Shipped</button>
+      </form>
+
+      {% else %}
+        <form action="" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="shipping_status" value="false">
+          <button type="submit" class="btn btn-outline-danger">Mark As Not Shipped</button>
+      </form>
+      {% endif %}
+<!--    <a href="#" class="btn btn-primary">Go somewhere</a>-->
+  </div>
+</div>
+
+        </div>
+    </div>
+</div>
+<br>
+<br>
+
+{% endblock %}

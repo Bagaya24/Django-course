@@ -1,7 +1,7 @@
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.models import User
+from datetime import datetime
 
 from cart.cart import Cart
 from payment.forms import ShippingForm, PaymentForm
@@ -121,4 +121,44 @@ def process_order(request:HttpRequest):
         return render(request, "payment/process_order.html")
 
     messages.error(request, "Access Denied")
+    return redirect("home")
+
+def shipped_dash(request: HttpRequest):
+    if request.user.is_authenticated and request.user.is_superuser:
+        orders = Order.objects.filter(shipped=True)
+        return render(request, "payment/shipped_dash.html", dict(orders=orders))
+    messages.success(request, "Access denied")
+    return redirect("home")
+
+def not_shipped_dash(request: HttpRequest):
+    if request.user.is_authenticated and request.user.is_superuser:
+        orders = Order.objects.filter(shipped=False)
+        return render(request, "payment/not_shipped_dash.html", dict(orders=orders))
+    messages.success(request, "Access denied")
+    return redirect("home")
+
+def orders(request: HttpRequest, pk: int):
+    if request.user.is_authenticated and request.user.is_superuser:
+        # Get the order
+        order = Order.objects.get(id=pk)
+        # Get the order items
+        items = OrderItem.objects.filter(order=pk)
+
+        if request.POST :
+            status = request.POST.get("shipping_status")
+            # Get the order
+            order = Order.objects.filter(id=pk)
+            if status == "true":
+
+                # Update the status
+                order.update(shipped=True, date_shipped=datetime.now())
+                messages.success(request, "Shipping status Updated")
+                return redirect("shipped_dash")
+            order.update(shipped=False)
+            messages.success(request, "Shipping status Updated")
+            return redirect("not_shipped_dash")
+
+
+        return render(request, "payment/orders.html", dict(order=order, items=items))
+    messages.success(request, "Access Denied")
     return redirect("home")
