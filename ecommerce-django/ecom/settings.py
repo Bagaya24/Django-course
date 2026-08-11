@@ -33,7 +33,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ['django-course-production-a7b4.up.railway.app', 'https://django-course-production-a7b4.up.railway.app']
-CSRF_TRUSTED_ORIGINS = ['django-course-production-a7b4.up.railway.app', 'https://django-course-production-a7b4.up.railway.app']
+CSRF_TRUSTED_ORIGINS =['https://django-course-production-a7b4.up.railway.app']
 
 # Application definition
 
