@@ -29,7 +29,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="shipping_status" value="true">
                             <input type="hidden" name="num" value="{{ order.id }}">
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Mark Shipped</button>
+                            <button type="submit" class="btn btn-sm btn-success">Mark Shipped</button>
                         </form>
                     </td>
                 </tr>

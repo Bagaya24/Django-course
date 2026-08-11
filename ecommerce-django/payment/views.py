@@ -4,6 +4,7 @@ from django.contrib import messages
 from datetime import datetime
 
 from cart.cart import Cart
+from ecom_app.models import Profile
 from payment.forms import ShippingForm, PaymentForm
 from payment.models import ShippingAddress, Order, OrderItem
 
@@ -91,9 +92,14 @@ def process_order(request:HttpRequest):
                         create_order_item.save()
                         # cart.delete_cart(product_id=product_id)
 
+            # Delete the cart from the cookie
             for key in list(request.session.keys()):
                 if key == "session_key":
                     del request.session[key]
+
+            # Delete the Cart from the Database
+            current_user_profile = Profile.objects.filter(user__id=request.user.id)
+            current_user_profile.update(old_cart="")
 
             messages.success(request, "order placed!")
             return render(request, "payment/process_order.html")
@@ -126,6 +132,10 @@ def process_order(request:HttpRequest):
 def shipped_dash(request: HttpRequest):
     if request.user.is_authenticated and request.user.is_superuser:
         orders = Order.objects.filter(shipped=True)
+        if request.POST:
+            num = request.POST.get("num")
+            order = Order.objects.filter(id=num)
+            order.update(shipped=False)
         return render(request, "payment/shipped_dash.html", dict(orders=orders))
     messages.success(request, "Access denied")
     return redirect("home")
@@ -133,6 +143,10 @@ def shipped_dash(request: HttpRequest):
 def not_shipped_dash(request: HttpRequest):
     if request.user.is_authenticated and request.user.is_superuser:
         orders = Order.objects.filter(shipped=False)
+        if request.POST:
+            num = request.POST.get("num")
+            order = Order.objects.filter(id=num)
+            order.update(shipped=True)
         return render(request, "payment/not_shipped_dash.html", dict(orders=orders))
     messages.success(request, "Access denied")
     return redirect("home")
