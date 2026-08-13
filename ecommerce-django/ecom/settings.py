@@ -32,8 +32,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['django-course-production-a7b4.up.railway.app', 'https://django-course-production-a7b4.up.railway.app', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS =['https://django-course-production-a7b4.up.railway.app']
+ALLOWED_HOSTS = ['django-course-production-a7b4.up.railway.app', 'https://django-course-production-a7b4.up.railway.app',
+                 'localhost', '127.0.0.1', 'headsman-dares-cognitive.ngrok-free.dev']
+CSRF_TRUSTED_ORIGINS =['https://django-course-production-a7b4.up.railway.app', 'https://headsman-dares-cognitive.ngrok-free.dev']
 
 # Application definition
 
@@ -145,4 +146,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # PayPal with sandbox
 PAYPAL_TEST = True
-PAYPAL_RECEIVER_EMAIL = "glodybusiness@gmail.com" # business sandbox account
+PAYPAL_RECEIVER_EMAIL = os.getenv("EMAIL_RECEIVER") # business sandbox account

@@ -25,8 +25,7 @@ SECRET_KEY = 'django-insecure-6xw%d*eqf@oa2)&_$8!f%kw13%($!aw9ymngm*4vjz-ki&pgv=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['headsman-dares-cognitive.ngrok-free.dev']
 
 # Application definition
 
@@ -52,8 +51,10 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+
+
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
+    'http://localhost:3000', 'headsman-dares-cognitive.ngrok-free.dev'
 ]
 
 ROOT_URLCONF = 'projet_backend.urls'

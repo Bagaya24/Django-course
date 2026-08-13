@@ -49,6 +49,21 @@ def billing_info(request:HttpRequest):
 
         # Get host
         host = request.get_host()
+        # Create Invoice Number
+        my_invoice = str(uuid4())
+
+        # Get shipping info
+        my_shipping = request.POST
+
+        request.session["my_shipping"] = my_shipping
+
+        # Gather order info
+        full_name = my_shipping.get("shipping_full_name")
+        email = my_shipping.get("shipping_email")
+
+        # Create the shipping address from session info
+        shipping_address = f"{my_shipping.get('shipping_address1')}\n{my_shipping.get("shipping_address2")}\n{my_shipping.get("shipping_city")}\n{my_shipping.get("shipping_province")}\n{my_shipping.get("shipping_zipcode")}\n{my_shipping.get("shipping_country")}"
+        amount_paid = totals
 
         # Create PayPal from dict
         paypal_dict = {
@@ -56,7 +71,7 @@ def billing_info(request:HttpRequest):
             "amount": totals,
             "item_name": "Computer",
             "no_shipping": "2",
-            "invoice": str(uuid4()),
+            "invoice": my_invoice,
             "currency_code": "USD",
             "notify_url": f"https://{host}{reverse('paypal-ipn')}",
             "return_url": f"https://{host}{reverse('payment_success')}",
@@ -68,15 +83,60 @@ def billing_info(request:HttpRequest):
         # Create a session with shipping info
         my_shipping = request.POST
         request.session["my_shipping"] = my_shipping
-        # if request.user.is_authenticated:
-        #
-        #     return render(request, "payment/billing_info.html",
-        #                   dict(products=products, quantities=quantities, totals=totals, shipping_info=request.POST,
-        #                        billing_form=billing_form, paypal_form=paypal_form))
+        if request.user.is_authenticated:
+
+            user = request.user
+            create_order = Order(user=user, full_name=full_name, email=email, shipping_address=shipping_address,
+                                 amount_paid=amount_paid, invoice=my_invoice)
+            create_order.save()
+
+            # Add order items
+            order_id = create_order.pk
+            # Get products info
+            for product in products():
+                product_id = product.id
+                price = product.sale_price if product.is_sale else product.price
+
+                for key, value in quantities().items():
+                    if int(key) == product_id:
+                        # Create order item
+                        create_order_item = OrderItem(order_id=order_id, product_id=product_id, user=user,
+                                                      quantity=value, price=price)
+                        create_order_item.save()
+                        # cart.delete_cart(product_id=product_id)
+
+
+
+            # Delete the Cart from the Database
+            current_user_profile = Profile.objects.filter(user__id=request.user.id)
+            current_user_profile.update(old_cart="")
+
+            return render(request, "payment/billing_info.html",
+                          dict(products=products, quantities=quantities, totals=totals, shipping_info=request.POST,
+                               billing_form=billing_form, paypal_form=paypal_form))
+
+
+            # User no logged
+
+        create_order = Order(full_name=full_name, email=email, shipping_address=shipping_address,
+                             amount_paid=amount_paid, invoice=my_invoice)
+        create_order.save()
+        order_id = create_order.pk
+        for product in products():
+            product_id = product.id
+            price = product.sale_price if product.is_sale else product.price
+
+            for key, value in quantities().items():
+                if int(key) == product_id:
+                    # Create order item
+                    create_order_item = OrderItem(order_id=order_id, product_id=product_id, quantity=value, price=price)
+                    create_order_item.save()
+                    # cart.delete_cart(product_id=product_id)
 
         return render(request, "payment/billing_info.html",
                       dict(products=products, quantities=quantities, totals=totals,
-                           shipping_info=request.POST ,billing_form=billing_form, paypal_form=paypal_form))
+                           shipping_info=request.POST, billing_form=billing_form, paypal_form=paypal_form))
+
 
     messages.success(request, "Access Denied")
     return redirect("home")
