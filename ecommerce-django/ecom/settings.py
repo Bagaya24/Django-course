@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['django-course-production-a7b4.up.railway.app', 'https://django-course-production-a7b4.up.railway.app']
+ALLOWED_HOSTS = ['django-course-production-a7b4.up.railway.app', 'https://django-course-production-a7b4.up.railway.app', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS =['https://django-course-production-a7b4.up.railway.app']
 
 # Application definition
@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     'cart',
     'payment',
     'whitenoise.runserver_nostatic',
+    'paypal.standard.ipn'
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -140,3 +142,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles  '
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# PayPal with sandbox
+PAYPAL_TEST = True
+PAYPAL_RECEIVER_EMAIL = "glodybusiness@gmail.com" # business sandbox account

@@ -8,11 +8,19 @@ from ecom_app.models import Profile
 from payment.forms import ShippingForm, PaymentForm
 from payment.models import ShippingAddress, Order, OrderItem
 
+# Import PayPal stuff
+from django.urls import reverse
+from django.conf import settings
+from uuid import uuid4
+from paypal.standard.forms import PayPalPaymentsForm
 
 # Create your views here.
 
 def payment_success(request:HttpRequest):
     return render(request, "payment/payment_success.html")
+
+def payment_failed(request:HttpRequest):
+    return render(request, "payment/payment_failed.html")
 
 def checkout(request:HttpRequest):
     cart = Cart(request)
@@ -39,17 +47,37 @@ def billing_info(request:HttpRequest):
         totals = cart.total_cart()
         billing_form = PaymentForm()
 
+        # Get host
+        host = request.get_host()
+
+        # Create PayPal from dict
+        paypal_dict = {
+            "business": settings.PAYPAL_RECEIVER_EMAIL,
+            "amount": totals,
+            "item_name": "Computer",
+            "no_shipping": "2",
+            "invoice": str(uuid4()),
+            "currency_code": "USD",
+            "notify_url": f"https://{host}{reverse('paypal-ipn')}",
+            "return_url": f"https://{host}{reverse('payment_success')}",
+            "cancel_return": f"https://{host}{reverse('payment_failed')}",
+        }
+
+        paypal_form = PayPalPaymentsForm(initial=paypal_dict)
+
         # Create a session with shipping info
         my_shipping = request.POST
         request.session["my_shipping"] = my_shipping
-        if request.user.is_authenticated:
-
-            return render(request, "payment/billing_info.html",
-                          dict(products=products, quantities=quantities, totals=totals, shipping_info=request.POST,
-                               billing_form=billing_form))
+        # if request.user.is_authenticated:
+        #
+        #     return render(request, "payment/billing_info.html",
+        #                   dict(products=products, quantities=quantities, totals=totals, shipping_info=request.POST,
+        #                        billing_form=billing_form, paypal_form=paypal_form))
 
         return render(request, "payment/billing_info.html",
-                      dict(products=products, quantities=quantities, totals=totals, shipping_info=request.POST ,billing_form=billing_form))
+                      dict(products=products, quantities=quantities, totals=totals,
+                           shipping_info=request.POST ,billing_form=billing_form, paypal_form=paypal_form))
+
     messages.success(request, "Access Denied")
     return redirect("home")
 
@@ -176,3 +204,23 @@ def orders(request: HttpRequest, pk: int):
         return render(request, "payment/orders.html", dict(order=order, items=items))
     messages.success(request, "Access Denied")
     return redirect("home")
+
+# PayPal
+def view_that_asks_for_money(request):
+
+    # What you want the button to do.
+    paypal_dict = {
+        "business": "receiver_email@example.com",
+        "amount": "10000000.00",
+        "item_name": "name of the item",
+        "invoice": "unique-invoice-id",
+        "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
+        "return": request.build_absolute_uri(reverse('your-return-view')),
+        "cancel_return": request.build_absolute_uri(reverse('your-cancel-view')),
+        "custom": "premium_plan",  # Custom command to correlate to some function later (optional)
+    }
+
+    # Create the instance.
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    context = {"form": form}
+    return render(request, "payment.html", context)
