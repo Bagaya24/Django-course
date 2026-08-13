@@ -146,4 +146,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # PayPal with sandbox
 PAYPAL_TEST = True
-PAYPAL_RECEIVER_EMAIL = os.getenv("EMAIL_RECEIVER") # business sandbox account
+PAYPAL_RECEIVER_EMAIL = "glodybusiness@gmail.com" # business sandbox account
