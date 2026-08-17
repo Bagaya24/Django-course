@@ -16,10 +16,18 @@ from paypal.standard.forms import PayPalPaymentsForm
 
 # Create your views here.
 
-def payment_success(request:HttpRequest):
+def payment_success(request):
+    # Delete the cart from the cookie
+    for key in list(request.session.keys()):
+        if key == "session_key":
+            del request.session[key]
     return render(request, "payment/payment_success.html")
 
-def payment_failed(request:HttpRequest):
+def payment_failed(request):
+    # Delete the cart from the cookie
+    # for key in list(request.session.keys()):
+    #     if key == "session_key":
+    #         del request.session[key]
     return render(request, "payment/payment_failed.html")
 
 def checkout(request:HttpRequest):
@@ -103,8 +111,6 @@ def billing_info(request:HttpRequest):
                         create_order_item = OrderItem(order_id=order_id, product_id=product_id, user=user,
                                                       quantity=value, price=price)
                         create_order_item.save()
-                        # cart.delete_cart(product_id=product_id)
-
 
 
             # Delete the Cart from the Database
@@ -264,23 +270,3 @@ def orders(request: HttpRequest, pk: int):
         return render(request, "payment/orders.html", dict(order=order, items=items))
     messages.success(request, "Access Denied")
     return redirect("home")
-
-# PayPal
-def view_that_asks_for_money(request):
-
-    # What you want the button to do.
-    paypal_dict = {
-        "business": "receiver_email@example.com",
-        "amount": "10000000.00",
-        "item_name": "name of the item",
-        "invoice": "unique-invoice-id",
-        "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-        "return": request.build_absolute_uri(reverse('your-return-view')),
-        "cancel_return": request.build_absolute_uri(reverse('your-cancel-view')),
-        "custom": "premium_plan",  # Custom command to correlate to some function later (optional)
-    }
-
-    # Create the instance.
-    form = PayPalPaymentsForm(initial=paypal_dict)
-    context = {"form": form}
-    return render(request, "payment.html", context)

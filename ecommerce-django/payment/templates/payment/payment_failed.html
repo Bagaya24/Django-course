@@ -1,14 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
- <div class="container">
-     <h2 class="text-warning">
-         Payment failed
-     </h2>
- </div>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Payment Failed!</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Your Order Is Not Complete...</p>
+        </div>
+    </div>
+
+</header>
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+        <h4 class="text-warning">There was a problem processing your order, please try again</h4>
+            
+        </div>
+    </div>
+</div>
+<br>
+<br>
+
+{% endblock %}

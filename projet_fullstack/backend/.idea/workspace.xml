@@ -5,13 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f57f01a9-715b-497e-9ba6-33c5be6efc88" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/SweepConfig.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../basics" beforeDir="false" afterPath="$PROJECT_DIR$/../../basics" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../ecommerce-django/ecom/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../ecommerce-django/ecom/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../ecommerce-django/payment/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../ecommerce-django/payment/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../ecommerce-django/payment/templates/payment/payment_failed.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../ecommerce-django/payment/templates/payment/payment_failed.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../ecommerce-django/payment/templates/payment/payment_success.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../ecommerce-django/payment/templates/payment/payment_success.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../ecommerce-django/payment/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../ecommerce-django/payment/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projet_backend/projet_backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/projet_backend/projet_backend/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,18 +46,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "dev.sweep.assistant.data.RecentlyUsedFiles": "projet_backend\\projet_backend\\settings.py;projet_backend\\api\\urls.py;.gitignore",
-    "git-widget-placeholder": "main",
-    "sweep.chatMode": "Agent"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;dev.sweep.assistant.data.RecentlyUsedFiles&quot;: &quot;projet_backend\\projet_backend\\settings.py;projet_backend\\api\\urls.py;.gitignore&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;sweep.chatMode&quot;: &quot;Agent&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\DELL\Documents\udemy\python\django_course\projet_fullstack\backend" />
